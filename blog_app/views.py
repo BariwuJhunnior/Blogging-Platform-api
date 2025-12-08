@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, UserUpdateForm
 
 # ---- Registration View ----
 def register(request):
@@ -22,10 +22,24 @@ def register(request):
 # --- Profile Management View (Basic Implementation)
 @login_required
 def profile(request):
-  #This example view just displays the profile template.
-  # For updating, you would add a form and POST logic here
+  if request.method == 'POST':
+    # Pass the POST data AND the current instance of the user (request.user)
+    user_form = UserUpdateForm(request.POST, instance=request.user)
 
-  return render(request, 'blog/profile.html')
+    if user_form.is_valid():
+      user_form.save()
 
-def home(request):
-  return redirect('post_list')
+      #User Django's messages framework to provide success feedback
+      messages.success(request, f'Your account has been updated!')
+      
+      return redirect('profile') #Post/Redirect/Get pattern
+  else:
+    # For a GET request, initialize the form with the current user data
+    user_form = UserUpdateForm(instance=request.user)
+
+  context = {
+    'user_form': user_form
+  }
+
+  # Pass the form object to the template
+  return render(request, 'blog/profile.html', context)

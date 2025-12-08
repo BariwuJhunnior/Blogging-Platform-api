@@ -1,5 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
+from django import forms
 
 User = get_user_model()
 
@@ -15,3 +16,10 @@ class UserRegistrationForm(UserCreationForm):
     super().__init__(*args, **kwargs)
     #Make the email field required during registration
     self.fields['email'].required = True
+
+class UserUpdateForm(forms.ModelForm):
+  email = forms.EmailField()
+
+  class Meta:
+    model = User
+    fields = ['username', 'email']
