@@ -27,3 +27,5 @@ def profile(request):
 
   return render(request, 'blog/profile.html')
 
+def home(request):
+  return redirect('post_list')
