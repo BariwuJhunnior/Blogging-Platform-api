@@ -24,4 +24,6 @@ def register(request):
 def profile(request):
   #This example view just displays the profile template.
   # For updating, you would add a form and POST logic here
+
   return render(request, 'blog/profile.html')
+
