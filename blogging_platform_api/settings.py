@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'posts',
     'users',
     'rest_framework.authtoken',
+    'django_filters',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -57,7 +59,18 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-    
+    'DEFAULT_FILTER_BACKENDS': (
+      'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+#Grouping Endpoints into UI's
+SPECTACULAR_SETTINGS = {
+  'TITLE': 'Blogging Platform API',
+  'DESCRIPTION': 'A fully functional API for managing blog posts, categories, and users.',
+  'VERSION': '1.0.0',
+  'SERVE_INCLUDE_SCHEMA': False,
 }
 
 ROOT_URLCONF = 'blogging_platform_api.urls'
