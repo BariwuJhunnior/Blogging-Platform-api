@@ -10,13 +10,20 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import generics
 
-@extend_schema_view(
-  list=extend_schema(summary="List all posts"),
-  create=extend_schema(summary="Create a post"),
-  
-)
-# Create your views here.
 #View for listing all posts and creating new posts
+#API documentation with drf-spectacular
+@extend_schema_view(
+  list=extend_schema(
+    summary='List all posts.',
+    description='Retrieve a list of blog posts with support for search and category filtering',
+    tags=['Public Feed']
+  ),
+  create=extend_schema(
+    summary='Create a blog post.',
+    description='Authorized users can create posts. Author is set automatically.',
+    tags=['Author Actions']
+  ),
+)
 class PostListCreateView(generics.ListCreateAPIView):
   queryset = Post.objects.all().order_by('-created_at') #Order by newest first
   serializer_class = PostSerializer
@@ -42,10 +49,10 @@ class PostListCreateView(generics.ListCreateAPIView):
     serializer.save(author=self.request.user)
 
 @extend_schema_view(
-  retrieve=extend_schema(summary="Get post details"),
-  update=extend_schema(summary="Full update of post"),
-  partial_update=extend_schema(summary="Partial update of post"),
-  destroy=extend_schema(summary="Delete a post"),
+  retrieve=extend_schema(summary="Get specific post", tags=['Public Feed']),
+  update=extend_schema(summary="Full update of post", tags=['Author Actions']),
+  partial_update=extend_schema(summary="Partial update of post", tags=['Author Actions']),
+  destroy=extend_schema(summary="Delete post", tags=['Author Actions']),
 )
 #View for retrieving a single post (Read) and updating/deleting 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):

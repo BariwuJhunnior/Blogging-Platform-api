@@ -3,7 +3,7 @@ from .models import Post, Category, Tag
 
 class PostSerializer(serializers.ModelSerializer):
   # Use StringRelatedField to show the author's username instead of their ID
-  author = serializers.StringRelatedField(read_only=True)
+  author = serializers.ReadOnlyField(source='author.username')
   # Use SlugRelatedField to show category name, and make it required
   category_name = serializers.SlugRelatedField(
     source='category', # Link to the 'category' field in the Post model
@@ -21,6 +21,6 @@ class PostSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = Post
-    fields = ('id', 'title', 'content', 'author', 'category_name', 'published_date', 'created_at', 'tags')
+    fields = ['id', 'title', 'content', 'author', 'category_name', 'published_date', 'created_at', 'tags']
     
     read_only_fields = ('author', 'created_at') #These are set by the server, not the user

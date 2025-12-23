@@ -68,10 +68,16 @@ REST_FRAMEWORK = {
 #Grouping Endpoints into UI's
 SPECTACULAR_SETTINGS = {
   'TITLE': 'Blogging Platform API',
-  'DESCRIPTION': 'A fully functional API for managing blog posts, categories, and users.',
+  'DESCRIPTION': 'Advanced API with deep-linked documentation, filtering, and role-based permissions.',
   'VERSION': '1.0.0',
   'SERVE_INCLUDE_SCHEMA': False,
-}
+  'SWAGGER_UI_SETTINGS': {
+    'deepLinking': True, # Enables individual URLs for each endpoint
+    'persistAuthorization': True, # Keeps you logged in across refreshes
+    'displayOperationId': True, # Helpful for frontend developers
+    },
+  }
+
 
 ROOT_URLCONF = 'blogging_platform_api.urls'
 
