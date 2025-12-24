@@ -152,3 +152,5 @@ STATIC_URL = 'static/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'notifications@blogapi.com'
+
+CELERY_BROKEN_URL = 'redis://localhost:6379/0'

@@ -14,6 +14,10 @@ from django.db.models import Count, Avg, QuerySet
 from django.db.models.functions import Coalesce
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db.models import Q
+from rest_framework.decorators import action
+from .tasks import share_post_via_email
+from .utils import get_social_share_links
 
 #A simple serializer for one-off messages
 MessageSerializer = inline_serializer(
@@ -43,7 +47,7 @@ MessageSerializer = inline_serializer(
   ),
 )
 class PostListCreateView(generics.ListCreateAPIView):
-  queryset = Post.objects.select_related('author', 'category').prefetch_related('tags', 'likes', 'ratings').all().order_by('-created_at') #Order by newest first
+  
   serializer_class = PostSerializer
   filterset_class = PostFilter
 
@@ -53,6 +57,19 @@ class PostListCreateView(generics.ListCreateAPIView):
   ]
 
   search_fields = ['title', 'content', 'author__username', 'tags__name']
+
+  def get_queryset(self): # type: ignore
+    user = self.request.user
+    queryset = Post.objects.select_related('author', 'category').prefetch_related('tags', 'likes', 'ratings').all().order_by('-created_at)') #Order by newest osts
+
+    if user.is_authenticated:
+      #Show all published posts OR dragts owned by the current user
+      return queryset.filter(
+        Q(status=Post.Status.PUBLISHED) | Q(author=user)
+      )
+    
+    #Anonymous users only see published posts
+    return queryset.filter(status=Post.Status.PUBLISHED)
   
   #Only Authenticated users can CREATE posts
   def get_permissions(self):
@@ -172,3 +189,52 @@ class RatePostView(generics.CreateAPIView):
       user=request.user, post=post, defaults={'score': score}
     )
     return Response({'message': 'Rating saved', 'score': score})
+  
+class PostPublishView(APIView):
+  permission_classes = [IsAuthorOrReadOnly]
+
+  @extend_schema(
+    summary='Publish a draft post',
+    responses={200: OpenApiResponse(description='Post is now live!')}
+  )
+  def post(self, request, pk):
+    post = generics.get_object_or_404(Post, pk=pk)
+    self.check_object_permissions(request, post)
+
+    post.status = Post.Status.PUBLISHED
+    post.save()
+
+    return Response({'message': 'Post published successfully!'})
+  
+class PostShareView(APIView):
+  permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+  @extend_schema(
+    summary='Share a post',
+    description="Trigger an email share and get social media links.",
+    request=inline_serializer(
+      name='ShareRequest',
+      fields={'recipient_name': serializers.EmailField(), 'sender_name': serializers.CharField()}
+    ),
+    tags=['Social Actions']
+  )
+  def post(self, request, pk):
+    post = generics.get_object_or_404(Post, pk=pk, status=Post.Status.PUBLISHED)
+
+    #1. Define the Post URL (In production, use your actual domain)
+    post_url = f"https:/myblog.com/posts/{post.id}/"
+
+    #2. Trigger Async Email if email data is provided
+    recipient = request.data.get('recipient_email')
+    sender = request.data.get('sender_name', 'A friend')
+
+    if recipient:
+      share_post_via_email.delay(post.title, post_url, recipient, sender)
+
+    #3. Return Social Links
+    share_links = get_social_share_links(post_url, post.title)
+
+    return Response({
+      "message": "Email is being sent!" if recipient else "Social links generated.",
+      "social_share_links": share_links
+    }, status=status.HTTP_200_OK)

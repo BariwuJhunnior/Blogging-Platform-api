@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Post, Category, Tag, Comment
+from .utils import get_social_share_links
 
 class PostSerializer(serializers.ModelSerializer):
   # Use StringRelatedField to show the author's username instead of their ID
@@ -22,15 +23,24 @@ class PostSerializer(serializers.ModelSerializer):
   likes_count = serializers.IntegerField(read_only=True)
   avg_rating = serializers.FloatField(read_only=True)
 
+  share_links = serializers.SerializerMethodField()
+
   class Meta:
     model = Post
-    fields = ['id', 'title', 'content', 'author', 'category_name', 'published_date', 'created_at', 'tags', 'likes_count', 'avg_rating']
-    
+    fields = ['id', 'title', 'content', 'author', 'category_name', 'published_at', 'created_at', 'tags', 'likes_count', 'avg_rating', 'share_links']
+
     read_only_fields = ('author', 'created_at') #These are set by the server, not the user
+
+  def get_share_links(self, obj):
+    #We only show links for published posts
+    if obj.status == Post.Status.PUBLISHED:
+      url = f"https://myblog.com/posts/{obj.id}"
+      return get_social_share_links(url, obj.title)
+    return None
 
 
 class CommentSerializer(serializers.ModelSerializer):
-  author = serializers.ReadOnlyField(source='post.id')
+  author = serializers.ReadOnlyField(source='author.username')
 
   class Meta:
     model = Comment
