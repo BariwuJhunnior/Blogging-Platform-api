@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post, Category, Tag, Comment
+from .models import Post, Category, Tag, Comment, Rating
 from .utils import get_social_share_links
 from drf_spectacular.utils import extend_schema_field
 from drf_spectacular.types import OpenApiTypes
@@ -48,3 +48,9 @@ class CommentSerializer(serializers.ModelSerializer):
   class Meta:
     model = Comment
     fields = ['id', 'post', 'author', 'content', 'created_at']
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = ['score']

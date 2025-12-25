@@ -20,6 +20,7 @@ class Tag(models.Model):
 
 class Post(models.Model):
   id = models.AutoField(primary_key=True)
+  author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
 
   class Status(models.TextChoices):
     DRAFT='DF', 'Draft'

@@ -154,3 +154,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'notifications@blogapi.com'
 
 CELERY_BROKEN_URL = 'redis://localhost:6379/0'
+
+# Profile ImageFied settings
+import os
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

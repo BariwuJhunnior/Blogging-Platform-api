@@ -1,9 +1,12 @@
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
-from .views import RegisterView, UserProfileView
+from .views import RegisterView, UserProfileView, ProfileDetailView, UserListView
 
 urlpatterns = [
     path("register/", RegisterView.as_view(), name='register'),
-    path('login/', obtain_auth_token, name='login'),
+    path('login/', obtain_auth_token, name='api-token-auth'),
     path('profile/', UserProfileView.as_view(), name='user-profile'),
+    #Profile endpoint using the username as a lookup
+    path('profiles/<str:user__username>/', ProfileDetailView.as_view(), name='profile-detail'),
+    path('users/', UserListView.as_view(), name='user-list')
 ]

@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from rest_framework import generics, permissions, status
 from .models import Post, Comment, Like, Rating
-from .serializers import PostSerializer, CommentSerializer
+from .serializers import PostSerializer, CommentSerializer, RatingSerializer
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAuthorOrReadOnly
 from .filters import PostFilter
@@ -165,6 +165,7 @@ class TopPostsView(generics.ListAPIView):
     
 class LikePostView(APIView):
   permission_classes = [permissions.IsAuthenticated]
+  serializer_class = None
 
   @extend_schema(summary='Toggle like on a post', responses={200: OpenApiResponse(description='Success')})
   def post(self, request, pk):
@@ -182,6 +183,7 @@ class RatePostView(generics.CreateAPIView):
   Allows a user to submit a rating (1-5). Updates if already exists.
   """
   permission_classes = [permissions.IsAuthenticated]
+  serializer_class = RatingSerializer
 
   def post(self, request, pk):
     score = request.data.get('score')
@@ -209,6 +211,7 @@ class PostPublishView(APIView):
   
 class PostShareView(APIView):
   permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+  serializer_class = None
 
   @extend_schema(
     summary='Share a post',
