@@ -51,7 +51,7 @@ class PostSerializer(serializers.ModelSerializer):
     ]
     allowed_attrs = {'a': ['href', 'title']}
 
-    return bleach.clean(html tags=allowed_tags, attributes=allowed_attrs)
+    return bleach.clean(html, tags=allowed_tags, attributes=allowed_attrs)
 
   @extend_schema_field(OpenApiTypes.OBJECT)
   def get_share_links(self, obj):
