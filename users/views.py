@@ -30,9 +30,12 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     return self.request.user
   
 class ProfileDetailView(generics.RetrieveUpdateAPIView):
-  queryset = Profile.objects.all().select_related('user').prefetch_related('user__posts')
+  
+  queryset = Profile.objects.all()
   serializer_class = ProfileSerializer
-  lookup_field = 'user__username' #Search by /profile/john/instead of /profile/1/
+
+  lookup_field = 'user__username'
+  lookup_url_kwarg = 'username'
 
   def get_permissions(self):
     if self.request.method in permissions.SAFE_METHODS:

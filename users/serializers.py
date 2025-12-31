@@ -33,13 +33,18 @@ class ProfileSerializer(serializers.ModelSerializer):
   #Include the user's posts directly in the profile
   posts = PostSerializer(source='user.posts', many=True, read_only=True)
 
-  follower_count = serializers.IntegerField(source='user.followers.count', read_only=True)
-  following_count = serializers.IntegerField(source='user.following', read_only=True)
+  followers_count = serializers.SerializerMethodField()
+  following_count = serializers.SerializerMethodField()
 
+  def get_followers_count(self, obj):
+    return obj.user.followers.count()
+  
+  def get_following_count(self, obj):
+    return obj.user.following.count()
 
   class Meta:
     model = Profile
-    fields = ['id', 'username', 'bio', 'profile_picture', 'location', 'posts', 'follower_count', 'following_count']
+    fields = ['id', 'username', 'bio', 'profile_picture', 'location', 'posts', 'followers_count', 'following_count']
 
   @extend_schema_field(PostSerializer(many=True))
   def get_posts(self, obj):

@@ -33,7 +33,7 @@ class Post(models.Model):
   content = models.TextField()
 
   #Relationships
-  author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_post')
+  author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
   tags = models.ManyToManyField(Tag, blank=True)
   likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
