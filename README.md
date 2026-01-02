@@ -375,11 +375,6 @@ If you encounter any issues or have questions:
 
 ## Future Enhancements
 
-- [ ] Comment system for posts
-- [ ] Like/unlike functionality
-- [ ] User following system
-- [ ] Post publishing workflow (draft/published)
-- [ ] File upload for images
 - [ ] Rate limiting
 - [ ] Email notifications
 - [ ] RSS feed generation
@@ -389,3 +384,4 @@ If you encounter any issues or have questions:
 ---
 
 **Built using Django and Django REST Framework**
+**Built as a capstone project**
