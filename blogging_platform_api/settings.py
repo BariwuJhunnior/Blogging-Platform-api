@@ -103,16 +103,15 @@ WSGI_APPLICATION = 'blogging_platform_api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
+import os
+import dj_database_url
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'blogging_platform_api_db',
-        'USER': 'root',
-        'HOST': 'localhost',
-        'PASSWORD': 'tilammg1234',
-        'PORT': 3306
-    }
+    'default': dj_database_url.config(
+      default=os.environ.get('DATABASE_URL'),
+      conn_max_age=600,
+      ssl_require=True
+    )
 }
 
 
