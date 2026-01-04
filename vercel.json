@@ -1,15 +1,14 @@
 {
-  "version": 2,
   "builds": [
     {
-      "src": "blogging_platform_api/wsgi.py",
+      "src": "blogging_platform_api_v2/wsgi.py",
       "use": "@vercel/python"
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "blogging_platform_api/wsgi.py"
+      "src": "/(.*)",
+      "dest": "blogging_platform_api_v2/wsgi.py"
     }
   ]
 }

@@ -112,6 +112,7 @@ DATABASES = {
         'DATABASE_URL', 'mysql://root:tilammg1234@localhost:3306/blogging_platform_api_db'
       ),
       conn_max_age=600,
+      ssl_require=True
     )
 }
 
