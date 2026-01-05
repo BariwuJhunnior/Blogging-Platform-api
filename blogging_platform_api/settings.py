@@ -118,30 +118,26 @@ WSGI_APPLICATION = 'blogging_platform_api.wsgi.application'
 import os
 import dj_database_url
 
-db_config = dj_database_url.config(
-  default=os.environ.get('DATABASE_URL'),
-  conn_max_age=600,
-  ssl_require=False
-)
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
-if db_config:
-  db_config['ENGINE'] = 'django.db.backends.mysql'
-
-  if not os.environ.get('DEBUG') == 'True':
-    db_config['OPTIONS'] = {
-      'ssl': {'ca': None}
+if DATABASE_URL:
+  DATABASES = {
+    'default': dj_database_url.parse(DATABASE_URL)
     }
+  
+  DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
 
-DATABASES = {
-    'default': db_config
-}
-
-if not DEBUG:
   DATABASES['default']['OPTIONS'] = {
-    'ssl': {
-      'ca': None
+    'ssl': {'ca': None}
+  }
+else:
+  DATABASES = {
+    'default': {
+      'ENGINE': 'django.db.backends.sqlite3',
+      'NAME': os.path.join(os.path.dirname(__file__), 'db.sqlite3'),
     }
   }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
