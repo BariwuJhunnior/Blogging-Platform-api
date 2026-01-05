@@ -118,14 +118,22 @@ WSGI_APPLICATION = 'blogging_platform_api.wsgi.application'
 import os
 import dj_database_url
 
+db_config = dj_database_url.config(
+  default=os.environ.get('DATABASE_URL'),
+  conn_max_age=600,
+  ssl_require=False
+)
+
+if db_config:
+  db_config['ENGINE'] = 'django.db.backends.mysql'
+
+  if not os.environ.get('DEBUG') == 'True':
+    db_config['OPTIONS'] = {
+      'ssl': {'ca': None}
+    }
+
 DATABASES = {
-    'default': dj_database_url.config(
-      default=os.environ.get(
-        'DATABASE_URL'
-      ),
-      conn_max_age=600,
-      ssl_require=False
-    )
+    'default': db_config
 }
 
 if not DEBUG:
