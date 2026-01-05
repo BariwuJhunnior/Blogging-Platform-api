@@ -115,32 +115,32 @@ WSGI_APPLICATION = 'blogging_platform_api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-import dj_database_url
 import os
 
-# 1. Force the fetch of the variable
-DATABASE_URL = os.environ.get('DATABASE_URL')
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT', '3306'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
+    }
+}
 
-# 2. If it's missing, let's print a clear error to the logs
-if not DATABASE_URL:
-    print("CRITICAL ERROR: DATABASE_URL is not set in Vercel Environment Variables!")
-    # Fallback to a dummy empty dict to trigger an ENGINE error if missing
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql', # Still force MySQL engine name
-            'NAME': 'missing_db_variable',
-        }
-    }
-else:
-    # 3. Parse the URL and force the MySQL engine
-    DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
-    DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
-    
-    # 4. MySQL specific options for PyMySQL
-    DATABASES['default']['OPTIONS'] = {
-        'ssl': {'ca': None},
-        'charset': 'utf8mb4',
-    }
+# Check for missing database environment variables
+missing_vars = []
+for key in ['DB_NAME', 'DB_USER', 'DB_PASSWORD', 'DB_HOST']:
+    if not os.environ.get(key):
+        missing_vars.append(key)
+
+if missing_vars:
+    print(f"CRITICAL ERROR: Missing database environment variables: {', '.join(missing_vars)}")
+    # You can choose to raise an exception or set a fallback here
+    # For now, we'll proceed, but connections will fail
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
