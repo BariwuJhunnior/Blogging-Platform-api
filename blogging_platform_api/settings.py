@@ -115,32 +115,41 @@ WSGI_APPLICATION = 'blogging_platform_api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-import os
 
+
+import dj_database_url
+import os
+import pymysql
+
+# Patch MySQL for PyMySQL
+pymysql.version_info = (2, 2, 1, "final", 0)
+pymysql.install_as_MySQLdb()
+
+# 1. Manually parse the URL to extract components
+db_url = os.environ.get('DATABASE_URL')
+
+if not db_url:
+    # If this triggers, your Vercel Dashboard is 100% missing the variable
+    raise ValueError("DATABASE_URL is missing from environment variables!")
+
+# 2. Use dj_database_url to parse the string into a dictionary
+parsed_config = dj_database_url.parse(db_url)
+
+# 3. Explicitly ensure HOST and PORT are strings (never None)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT', '3306'),
+        'NAME': parsed_config.get('NAME'),
+        'USER': parsed_config.get('USER'),
+        'PASSWORD': parsed_config.get('PASSWORD'),
+        'HOST': parsed_config.get('HOST') or 'localhost', # Ensure this is never None
+        'PORT': parsed_config.get('PORT') or '3306',
         'OPTIONS': {
+            'ssl': {'ca': None}, # Standard for Cloud MySQL
             'charset': 'utf8mb4',
-        },
+        }
     }
 }
-
-# Check for missing database environment variables
-missing_vars = []
-for key in ['DB_NAME', 'DB_USER', 'DB_PASSWORD', 'DB_HOST']:
-    if not os.environ.get(key):
-        missing_vars.append(key)
-
-if missing_vars:
-    print(f"CRITICAL ERROR: Missing database environment variables: {', '.join(missing_vars)}")
-    # You can choose to raise an exception or set a fallback here
-    # For now, we'll proceed, but connections will fail
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
