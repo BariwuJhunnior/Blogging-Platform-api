@@ -118,29 +118,29 @@ WSGI_APPLICATION = 'blogging_platform_api.wsgi.application'
 import dj_database_url
 import os
 
-# Get the connection string
+# 1. Force the fetch of the variable
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
+# 2. If it's missing, let's print a clear error to the logs
 if not DATABASE_URL:
-    # This will show up in your Vercel logs if the variable is missing
-    raise ValueError("DATABASE_URL environment variable is missing from Vercel settings!")
-
-DATABASES = {
-    'default': dj_database_url.config(
-        default=DATABASE_URL,
-        conn_max_age=600,
-        ssl_require=False
-    )
-}
-
-# Force MySQL Engine and PyMySQL compatibility
-DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
-
-# SSL is required for almost all cloud MySQL providers
-DATABASES['default']['OPTIONS'] = {
-    'ssl': {'ca': None}
-}
-
+    print("CRITICAL ERROR: DATABASE_URL is not set in Vercel Environment Variables!")
+    # Fallback to a dummy empty dict to trigger an ENGINE error if missing
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql', # Still force MySQL engine name
+            'NAME': 'missing_db_variable',
+        }
+    }
+else:
+    # 3. Parse the URL and force the MySQL engine
+    DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
+    DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
+    
+    # 4. MySQL specific options for PyMySQL
+    DATABASES['default']['OPTIONS'] = {
+        'ssl': {'ca': None},
+        'charset': 'utf8mb4',
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
