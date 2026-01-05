@@ -25,13 +25,9 @@ SECRET_KEY = 'django-insecure-^80@t#a9!vr2od(_s5tzf*jzu3=!8+jkp4t&6+nj=ao9okk63g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'bloggingplatformapiv4.vercel.app', 
-    '.vercel.app', 
-    'now.sh', 
-    'localhost', 
-    '127.0.0.1'
-]
+import os
+
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 # Application definition
