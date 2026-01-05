@@ -121,13 +121,19 @@ import dj_database_url
 DATABASES = {
     'default': dj_database_url.config(
       default=os.environ.get(
-        'DATABASE_URL', 'mysql://root:tilammg1234@localhost:3306/blogging_platform_api_db'
+        'DATABASE_URL'
       ),
       conn_max_age=600,
-      ssl_require=True
+      ssl_require=False
     )
 }
 
+if not DEBUG:
+  DATABASES['default']['OPTIONS'] = {
+    'ssl': {
+      'ca': None
+    }
+  }
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
