@@ -115,28 +115,31 @@ WSGI_APPLICATION = 'blogging_platform_api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-import os
 import dj_database_url
+import os
 
+# Get the connection string
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
-if DATABASE_URL:
-  DATABASES = {
-    'default': dj_database_url.parse(DATABASE_URL)
-    }
-  
-  DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
+if not DATABASE_URL:
+    # This will show up in your Vercel logs if the variable is missing
+    raise ValueError("DATABASE_URL environment variable is missing from Vercel settings!")
 
-  DATABASES['default']['OPTIONS'] = {
+DATABASES = {
+    'default': dj_database_url.config(
+        default=DATABASE_URL,
+        conn_max_age=600,
+        ssl_require=False
+    )
+}
+
+# Force MySQL Engine and PyMySQL compatibility
+DATABASES['default']['ENGINE'] = 'django.db.backends.mysql'
+
+# SSL is required for almost all cloud MySQL providers
+DATABASES['default']['OPTIONS'] = {
     'ssl': {'ca': None}
-  }
-else:
-  DATABASES = {
-    'default': {
-      'ENGINE': 'django.db.backends.sqlite3',
-      'NAME': os.path.join(os.path.dirname(__file__), 'db.sqlite3'),
-    }
-  }
+}
 
 
 # Password validation
