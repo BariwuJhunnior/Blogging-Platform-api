@@ -27,7 +27,17 @@ DEBUG = True
 
 import os
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+VERCEL_URL = os.environ.get('VERCEL_URL')
+
+ALLOWED_HOSTS = [
+  '.vercel.app',
+  'now.sh',
+  'localhost',
+  '127.0.0.1'
+]
+
+if VERCEL_URL:
+  ALLOWED_HOSTS.append(VERCEL_URL)
 
 
 # Application definition
