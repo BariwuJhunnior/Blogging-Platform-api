@@ -178,7 +178,6 @@ CELERY_BROKEN_URL = 'redis://localhost:6379/0'
 CELERY_TASK_ALWAYS_EAGER = True
 
 # Profile ImageFied settings
-import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
