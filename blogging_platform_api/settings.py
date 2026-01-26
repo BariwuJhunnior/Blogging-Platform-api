@@ -124,15 +124,7 @@ DATABASES = {
 }
 
 # Check for missing database environment variables
-missing_vars = []
-for key in ['DB_NAME', 'DB_USER', 'DB_PASSWORD', 'DB_HOST']:
-    if not os.environ.get(key):
-        missing_vars.append(key)
 
-if missing_vars:
-    print(f"CRITICAL ERROR: Missing database environment variables: {', '.join(missing_vars)}")
-    # You can choose to raise an exception or set a fallback here
-    # For now, we'll proceed, but connections will fail
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
