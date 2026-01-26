@@ -10,5 +10,5 @@ urlpatterns = [
     #Profile endpoint using the username as a lookup
     path('profiles/<str:username>/', ProfileDetailView.as_view(), name='profile-detail'),
     path('profiles/<str:username>/follow/', FollowUserView.as_view(), name='user-follow'),
-    path('users/', UserListView.as_view(), name='user-list'),
+    path('', UserListView.as_view(), name='user-list'),
 ]
