@@ -6,7 +6,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, Sp
 
 urlpatterns = [
   #GET (List) and POST (Create)
-  path('', PostListCreateView.as_view(), name='post-list'),
+  path('posts/', PostListCreateView.as_view(), name='post-list'),
   #GET (Retrieve), PUT/PATCH (Update), DELETE(Destroy)
   path('<int:pk>/', PostDetailView.as_view(), name='post-detail'),
 
