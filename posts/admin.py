@@ -1,6 +1,9 @@
 from django.contrib import admin
 from .models import Post, Category
 
+admin.site.register(Post)
+admin.site.register(Category)
+
 # Register your models here.
 @admin.action(description="Mark selected posts as Published")
 def make_published(modeladmin, _request, queryset):

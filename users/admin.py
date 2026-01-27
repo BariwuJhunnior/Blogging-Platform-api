@@ -21,6 +21,7 @@ class ProfileAdmin(admin.ModelAdmin):
   
 
 admin.site.register(Follow)
+admin.site.register(Profile)
 
 class ProfileInline(admin.StackedInline):
   model = Profile
