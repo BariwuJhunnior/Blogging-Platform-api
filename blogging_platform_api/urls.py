@@ -8,7 +8,7 @@ from django.http import JsonResponse
 def home(request):
     return JsonResponse({
         "message": "Blogging Platform API is running!",
-        "/api/": "To List Endpoints"
+        "/api/": "Append to end of url to list endpoints"
     })
 
 def api_root(request):
