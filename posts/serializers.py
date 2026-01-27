@@ -50,6 +50,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     read_only_fields = ('author',) #These are set by the server, not the user
 
+  @extend_schema_field(serializers.BooleanField)
   def get_has_liked(self, obj):
     request = self.context.get('request')
     if request is None or not request.user.is_authenticated:
