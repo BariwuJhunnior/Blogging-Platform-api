@@ -28,6 +28,6 @@ urlpatterns = [
     path("", home),
     path("api/", api_root),
     path('admin/', admin.site.urls),
-    path('api/users/', include('users.urls')),
-    path('api/posts/', include('posts.urls')),
+    path('api/', include('users.urls')),
+    path('api/', include('posts.urls')),
 ]
