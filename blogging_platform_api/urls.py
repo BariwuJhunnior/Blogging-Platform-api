@@ -13,14 +13,14 @@ def home(request):
 
 def api_root(request):
     return JsonResponse({
-        "message": "Welcome to the Blogging Platform API",
-        "endpoints": {
-            "users": "/api/users/",
-            "register": "/api/register/",
-            "login": "/api/login/",
-            "posts": "/api/posts/",
-            "feed": "/api/feed/",
-            "docs": "/api/docs/swagger"
+        "Message": "Welcome to the Blogging Platform API",
+        "Endpoints": {
+            "Users": "/api/users/",
+            "Register": "/api/register/",
+            "Login": "/api/login/",
+            "Posts": "/api/posts/",
+            "Feed": "/api/feed/",
+            "API Documentation": "/api/docs/swagger"
         }
     })
 
