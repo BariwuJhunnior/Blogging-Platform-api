@@ -364,7 +364,7 @@ class GlobalFeedView(generics.ListAPIView):
 
     queryset = Post.objects.filter(status='PB').order_by('-published_at')
 
-    return Post.objects.filter(status=Post.Status.PUBLISHED).annotate(likes_count=Count('likes')).select_related('author', 'category').prefetch_related('tags')
+    return Post.objects.filter(status=Post.Status.PUBLISHED).annotate(likes_count=Count('likes')).select_related('author', 'category').prefetch_related('tags').order_by('-published_at')
   
 
 @extend_schema_view(
