@@ -54,6 +54,9 @@ class Post(models.Model):
   def total_likes(self):
     return self.likes.count()
 
+  class Meta:
+    ordering = ['-created_at']
+
 
 class Comment(models.Model):
   post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
