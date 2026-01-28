@@ -33,18 +33,8 @@ class ProfileSerializer(serializers.ModelSerializer):
   #Include the user's posts directly in the profile
   posts = PostSerializer(source='user.posts', many=True, read_only=True)
 
-  followers = serializers.SlugRelatedField(
-    many=True,
-    read_only = True,
-    slug_field='follower__username',
-    source='user.followers'
-  )
-  following = serializers.SlugRelatedField(
-    many=True,
-    read_only=True,
-    slug_field='followed_user__username',
-    source='user.following'
-  )
+  followers = serializers.SerializerMethodField()
+  following = serializers.SerializerMethodField()
 
   followers_count = serializers.SerializerMethodField()
   following_count = serializers.SerializerMethodField()

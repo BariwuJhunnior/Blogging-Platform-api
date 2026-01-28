@@ -367,6 +367,10 @@ class GlobalFeedView(generics.ListAPIView):
     return Post.objects.filter(status=Post.Status.PUBLISHED).annotate(likes_count=Count('likes')).select_related('author', 'category').prefetch_related('tags')
   
 
+@extend_schema_view(
+    list=extend_schema(operation_id='categories_list'),
+    create=extend_schema(operation_id='categories_create')
+)
 class CategoryListView(generics.ListCreateAPIView):
   #Below calculated the count of post in the database before it even hits the serializer
   queryset = Category.objects.all()
