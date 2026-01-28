@@ -49,6 +49,9 @@ class PostSerializer(serializers.ModelSerializer):
     fields = ['id', 'title', 'content', 'author', 'status_display', 'category', 'created_at', 'has_liked', 'likes_count', 'comments', 'content_html', 'avg_rating', 'tags', 'status']
 
     read_only_fields = ('author',) #These are set by the server, not the user
+    extra_kwargs = {
+      'status': {'required': True}
+    }
 
   @extend_schema_field(serializers.BooleanField)
   def get_has_liked(self, obj):
