@@ -33,7 +33,7 @@ def notify_subscribers(post_id):
   post = Post.objects.get(pk=post_id)
 
   #1. Get emails of people following the author
-  author_followers = Follow.objects.filter(author=post.author).values_list('follower__email', flat=True)
+  author_followers = Follow.objects.filter(followed_user=post.author).values_list('follower__email', flat=True)
 
   #2. Get emails of people subscribed to the category
   category_subs = CategorySubscription.objects.filter(category=post.category).values_list('user__email', flat=True)
