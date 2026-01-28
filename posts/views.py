@@ -317,7 +317,7 @@ class UserFeedView(generics.ListAPIView):
       return Post.objects.filter(status='PB').order_by('-published_at')
 
     #1. Get IDs of authors the user follows
-    followed_authors = user.following.values_list('author_id', flat=True)  # type: ignore
+    followed_authors = user.following.values_list('followed_user_id', flat=True)  # type: ignore
 
     #2. Get IDs of categories the user is subscribed to
     subscribed_categories = user.category_subscriptions.values_list('category_id', flat=True)  # type: ignore
